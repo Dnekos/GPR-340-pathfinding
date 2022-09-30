@@ -1,8 +1,13 @@
 #include "Cat.h"
 #include "World.h"
 #include <stdexcept>
+#include <queue>
 
 Point2D Cat::Move(World* world) {
+    std::priori
+
+
+
   auto rand = Random::Range(0,5);
   auto pos = world->getCat();
   switch(rand){
