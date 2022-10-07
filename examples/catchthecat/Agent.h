@@ -12,6 +12,12 @@ class Agent {
   void DoPathfinding(World * world, Point2D startingPos);
 };
 
+
+struct Node
+{
+	Point2D cameFrom;
+	bool visited = false;
+};
 struct QueueEntry {
 	QueueEntry(Point2D pos, float w)
 	{

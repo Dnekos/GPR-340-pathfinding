@@ -1,6 +1,7 @@
 #include "World.h"
 #include "Polygon.h"
 #include <chrono>
+#include <vector>
 
 void World::print() {
   auto catposid = catPosition.y*(sideSize/2) + catPosition.x + sideSize*sideSize/2;
@@ -70,6 +71,17 @@ Point2D World::SW(const Point2D& p) {
   if(p.y%2)
     return {p.x+1, p.y+1};
   return {p.x, p.y+1};
+}
+
+std::vector<Point2D> World::GetNeighbors(const Point2D& p)
+{
+    std::vector<Point2D> neighbors{ E(p),
+        NE(p),
+        NW(p),
+        SE(p),
+        SW(p),
+        W(p) };
+    return neighbors;
 }
 
 bool World::isValidPosition(const Point2D& p) {
