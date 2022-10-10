@@ -102,6 +102,7 @@ bool World::isNeighbor(const Point2D &p1, const Point2D &p2) {
          SW(p1) == p2;
 }
 
+
 void World::OnDraw(SDL_Renderer* renderer) {
     Hexagon hex;
     Transform t;
@@ -178,19 +179,32 @@ void World::OnGui(ImGuiContext *context) {
     }
     ImGui::End();
 
-    if((catcherWon || catWon)) {
+    if(catWon) {
       ImGuiIO& io = ImGui::GetIO();
       ImVec2 pos(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
       ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
       ImGuiWindowFlags flags = ImGuiWindowFlags_NoMove
                                | ImGuiWindowFlags_AlwaysAutoResize
                                | ImGuiWindowFlags_NoSavedSettings;
-      if (ImGui::Begin("Game Over", nullptr, flags)) {
+      if (ImGui::Begin("Game Over, Cat Won", nullptr, flags)) {
         if (ImGui::Button("OK", ImVec2(200, 0))) {
           clearWorld();
         }
       }
     }
+	if (catcherWon) {
+		ImGuiIO& io = ImGui::GetIO();
+		ImVec2 pos(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+		ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		ImGuiWindowFlags flags = ImGuiWindowFlags_NoMove
+			| ImGuiWindowFlags_AlwaysAutoResize
+			| ImGuiWindowFlags_NoSavedSettings;
+		if (ImGui::Begin("Game Over, Catcher Won", nullptr, flags)) {
+			if (ImGui::Button("OK", ImVec2(200, 0))) {
+				clearWorld();
+			}
+		}
+	}
 }
 
 void World::Update(float deltaTime) {

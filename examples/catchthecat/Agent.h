@@ -5,11 +5,13 @@
 class World;
 
 class Agent {
- public:
-  explicit Agent() = default;
-  
-  virtual Point2D Move(World*) = 0;
-  void DoPathfinding(World * world, Point2D startingPos);
+public:
+	explicit Agent() = default;
+
+	virtual Point2D Move(World*) = 0;
+	Point2D DoPathfinding(World* world, Point2D startingPos, Point2D endPos, bool GiveEnd = false);
+	Point2D GetClosestEdge(World* world, Point2D start);
+
 };
 
 
@@ -17,6 +19,7 @@ struct Node
 {
 	Point2D cameFrom;
 	bool visited = false;
+	float cost;
 };
 struct QueueEntry {
 	QueueEntry(Point2D pos, float w)
