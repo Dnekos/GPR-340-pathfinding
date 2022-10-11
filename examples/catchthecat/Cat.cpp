@@ -3,31 +3,8 @@
 #include <stdexcept>
 #include <queue>
 
-Point2D Cat::Move(World* world) {
-
+Point2D Cat::Move(World* world)
+{
+	// simply return the next step towards an edge, GetClosestEdge does return a valid point even if its filled.
 	return DoPathfinding(world, world->getCat(), GetClosestEdge(world, world->getCat()));
-
-	Point2D chosenPos;
-	return world->getCat();
-	do
-	{
-		auto rand = Random::Range(0, 5);
-		auto pos = world->getCat();
-		switch (rand) {
-		case 0:
-			return World::NE(pos);
-		case 1:
-			return World::NW(pos);
-		case 2:
-			return World::E(pos);
-		case 3:
-			return World::W(pos);
-		case 4:
-			return World::SW(pos);
-		case 5:
-			return World::SE(pos);
-		default:
-			throw "random out of range";
-		}
-	} while (world->isValidPosition(chosenPos) && !world->getContent(chosenPos));
 }
