@@ -11,7 +11,7 @@
 
 class RecursiveDivision: public MazeGeneratorBase {
  private:
-  std::vector<Point2D> stack;
+  std::vector<DivideParameters> stack;
   std::map<int, std::map<int, bool>> visited; // naive. not optimal
 
   bool ChooseOrientation(int width, int height);
@@ -23,6 +23,10 @@ class RecursiveDivision: public MazeGeneratorBase {
   void Clear(World * world) override;
 };
 
-//struct 
+struct DivideParameters
+{
+	int x, y, w, h;
+	bool orientation;
+};
 
 #endif  // RECURSIVEBACKTRACKER_H

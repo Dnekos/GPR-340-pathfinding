@@ -14,10 +14,15 @@ bool RecursiveDivision::ChooseOrientation(int width, int height)
         return Random::Range(0, 1) == 0;
 }
 
-bool RecursiveDivision::Step(World* w) {
-  
+bool RecursiveDivision::Step(World* w) 
+{
+    DivideParameters p;
+    if (stack.empty())
+    {
+        p = 
+    }
+     
     return true;
-  }
 }
 void RecursiveDivision::Clear(World* world) {
   visited.clear();
