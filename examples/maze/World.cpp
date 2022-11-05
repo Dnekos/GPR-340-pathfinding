@@ -3,10 +3,11 @@
 #include "generators/RecursiveDivision.h"
 #include <chrono>
 
-World::World(Engine* pEngine, int size=11): GameObject(pEngine), sideSize(size) {
-  generators.push_back(new MazeGenerator());
-  generators.push_back(new RecursiveBacktracker());
-  generators.push_back(new RecursiveDivision());
+World::World(Engine* pEngine, int size = 11) : GameObject(pEngine), sideSize(size) {
+    generators.push_back(new RecursiveDivision());
+
+    //generators.push_back(new MazeGenerator());
+    generators.push_back(new RecursiveBacktracker());
 }
 
 World::~World(){

@@ -11,16 +11,14 @@
 
 struct DivideParameters;
 
-class RecursiveDivision : public MazeGeneratorBase {
+class RecursiveDivision : public MazeGeneratorBase 
+{
 private:
 	std::vector<DivideParameters> stack;
-	std::map<int, std::map<int, bool>> visited; // naive. not optimal
-
 	bool ChooseOrientation(int width, int height);
 	bool FirstRun = true;
 public:
 	RecursiveDivision() = default;
-	Point2D RecursiveDivision::randomStartPoint(World* world);
 	std::string GetName() override {
 		return "Recursive Division";
 	};

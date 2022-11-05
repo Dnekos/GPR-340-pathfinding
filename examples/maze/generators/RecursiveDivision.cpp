@@ -10,7 +10,7 @@ bool RecursiveDivision::ChooseOrientation(int width, int height)
     {
         return HORIZONTAL;
     }
-    else if (height > width)
+    else if (width > height)
     {
         return VERTICAL;
     }
@@ -63,29 +63,38 @@ bool RecursiveDivision::Step(World* w)
     if (p.w < 2 || p.h < 2)
         return true;
 
-    // where will the wall be drawn from
-    int wx = p.x + (p.orientation ? 0 : Random::Range(1, p.w - 2));
+    int wx, wy, px, py, dx, dy;
+    if (p.orientation)
+    {
+        // whats the position of the new wall
+        wx = p.x;
+        wy = p.y + Random::Range(0, p.h - 2);
 
-
-    int rando = Random::Range(1, p.h - 2);
-    int wy = p.y + (p.orientation ? rando : 0);
-    std::cout << wy << " = " << p.y << " + (" << p.orientation << " ? " << rando << " : 0)\n";
-
-    // where will the passage through the wall exist ?
-    int px = wx + (p.orientation ? Random::Range(1, p.w) : 0);
-    int py = wy + (p.orientation ? 0 : Random::Range(1, p.h));
+        // where is the wall's hole
+        px = wx + Random::Range(1, p.w - 1);
+        py = wy;
 
         // what direction will the wall be drawn ?
-    int dx = p.orientation ? 1 : 0;
-    int dy = p.orientation ? 0 : 1;
+        dx = 1;
+        dy = 0;
+    }
+    else
+    {
+        // whats the position of the new wall
+        wx = p.x + Random::Range(0, p.w - 2);
+        wy = p.y;
 
-    std::cout << p.x << " " << p.y << " " << p.orientation << " " << wx << " " << wy << " " << px << " " << py << std::endl;
+        // where is the wall's hole
+        px = wx;
+        py = wy + Random::Range(1, p.h - 1);
 
-        // how long will the wall be ?
+        // what direction will the wall be drawn ?
+        dx = 0;
+        dy = 1;
+    }
+
+    // iterate through the wall
     int length = p.orientation ? p.w : p.h;
-
-        // what direction is perpendicular to the wall ?
-
     for (int i = 0; i < length; i++)
     {
         if (wx != px || wy != py)
@@ -115,24 +124,8 @@ bool RecursiveDivision::Step(World* w)
 
     return true;
 }
-void RecursiveDivision::Clear(World* world) {
-  visited.clear();
+void RecursiveDivision::Clear(World* world) 
+{
   stack.clear();
-  auto sideOver2 = world->GetSize()/2;
   FirstRun = true;
-
-  for(int i=-sideOver2;i<=sideOver2;i++){
-    for(int j=-sideOver2;j<=sideOver2;j++){
-      visited[i][j] = false;
-    }
-  }
-}
-Point2D RecursiveDivision::randomStartPoint(World* world) {
-  auto sideOver2 = world->GetSize()/2;
-
-  for(int y=-sideOver2; y<=sideOver2; y++)
-    for(int x=-sideOver2; x<=sideOver2; x++)
-    //  if(!visited[y][x])
-        return {x,y};
-  return {INT_MAX, INT_MAX};
 }
