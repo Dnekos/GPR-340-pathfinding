@@ -1,5 +1,5 @@
-#ifndef RECURSIVEBACKTRACKER_H
-#define RECURSIVEBACKTRACKER_H
+#ifndef RECURSIVEDIVISION_H
+#define RECURSIVEDIVISION_H
 
 #include "../MazeGeneratorBase.h"
 #include "Point2D.h"
@@ -17,11 +17,12 @@ private:
 	std::map<int, std::map<int, bool>> visited; // naive. not optimal
 
 	bool ChooseOrientation(int width, int height);
+	bool FirstRun = true;
 public:
 	RecursiveDivision() = default;
 	Point2D RecursiveDivision::randomStartPoint(World* world);
 	std::string GetName() override {
-		return "Recursive Back-Tracker";
+		return "Recursive Division";
 	};
 	bool Step(World* world) override;
 	void Clear(World* world) override;
@@ -33,4 +34,4 @@ struct DivideParameters
 	bool orientation;
 };
 
-#endif  // RECURSIVEBACKTRACKER_H
+#endif  // RECURSIVEDIVISION_H
