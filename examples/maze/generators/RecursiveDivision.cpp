@@ -33,10 +33,7 @@ bool RecursiveDivision::Step(World* w)
         for (int y = -sideOver2; y <= sideOver2; y++)
         {
             for (int x = -sideOver2; x <= sideOver2; x++)
-            {
-                w->SetNodeColor({ x,y }, Color::Black);
                 w->SetNode({ x, y }, blank);
-            }
 
             // fix outline on horizontal edge
             w->SetEast({ sideOver2, y }, true);
@@ -59,11 +56,37 @@ bool RecursiveDivision::Step(World* w)
     // get next recursion
     DivideParameters p = stack.back();
     stack.pop_back();
-
-    if (p.w < 2 || p.h < 2)
-        return true;
-
     int wx, wy, px, py, dx, dy;
+
+    // if we have a 1 cell wide corridor, paint it but do not recurse!
+    if (p.w < 2 || p.h < 2)
+    {
+        p.orientation = p.w > p.h;
+        wx = p.x;
+        wy = p.y;
+        if (p.orientation)
+        {
+            // what direction will the wall be drawn ?
+            dx = 1;
+            dy = 0;
+        }
+        else
+        {
+            // what direction will the wall be drawn ?
+            dx = 0;
+            dy = 1;
+        }
+        int length = p.orientation ? p.w : p.h;
+        for (int i = 0; i < length; i++)
+        {
+            w->SetNodeColor({ wx,wy }, Color::Black);
+            wx += dx;
+            wy += dy;
+        }
+        return true;
+    }
+
+
     if (p.orientation)
     {
         // whats the position of the new wall
@@ -92,6 +115,8 @@ bool RecursiveDivision::Step(World* w)
         dx = 0;
         dy = 1;
     }
+
+    
 
     // iterate through the wall
     int length = p.orientation ? p.w : p.h;
