@@ -78,6 +78,7 @@ void Manager::OnGui(ImGuiContext* context) {
               1000.0f / ImGui::GetIO().Framerate,
               ImGui::GetIO().Framerate);
   static auto newSize = sideSize;
+  static float newparam = GeneratorVariable;
 
   if(ImGui::SliderInt("Side Size", &newSize, 5, 2048)) {
     //newSize = (newSize/4)*4 + 1;
@@ -85,6 +86,14 @@ void Manager::OnGui(ImGuiContext* context) {
       sideSize = newSize;
       Clear();
     }
+  }
+
+  if (ImGui::SliderFloat("Parameter", &newparam, 0, 100)) {
+  //newSize = (newSize/4)*4 + 1;
+      if (newparam != GeneratorVariable) {
+          GeneratorVariable = newparam;
+          Clear();
+      }
   }
 
   ImGui::Text("Generator: %s", generators[generatorId]->GetName().c_str());
@@ -141,7 +150,7 @@ int Manager::GetSize() const {
 }
 void Manager::step() {
   auto start = std::chrono::high_resolution_clock::now();
-  auto pixels = generators[generatorId]->Generate(sideSize, accumulatedTime);
+  auto pixels = generators[generatorId]->Generate(sideSize, accumulatedTime, GeneratorVariable);
   auto step = std::chrono::high_resolution_clock::now();
   SetPixels(pixels);
   auto end = std::chrono::high_resolution_clock::now();

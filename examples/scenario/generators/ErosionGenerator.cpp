@@ -1,34 +1,39 @@
 #include "ErosionGenerator.h"
-#include "../Noise.h"
+#include "../FastNoiseLite.h"
 #include "../PerlinNoise.hpp"
 #include <iostream>
 // do not use this one to your assignment. this is my sample generator
-std::vector<Color32> ErosionGenerator::Generate(int sideSize, float displacement)
+std::vector<Color32> ErosionGenerator::Generate(int sideSize, float displacement, float other_param)
 {
     std::vector<Color32> colors;
     std::vector<Color32> Thermalcolors;
 
 
     //   create your own function for noise generation
-    siv::BasicPerlinNoise<float> noise;
-    noise.reseed(1337);
-    //  Noise noise(1337, 1024,0,255);
-    for (int l = 0; l < sideSize; l++)
-    {
-        for (int c = 0; c < sideSize; c++)
-        {
-            float rgb = abs(noise.octave3D(c / 50.0, l / 50.0, displacement, 4) * 255);
-            colors.emplace_back(rgb, rgb, rgb);
-            Thermalcolors.emplace_back(rgb, rgb, rgb);
-        //      double color = noise.noise(c/50.0,l/50.0);
-        //      colors.emplace_back(color,color,color);
+    FastNoiseLite base;
+    base.SetFractalOctaves(3);
+    base.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2S);
+    base.SetFractalType(FastNoiseLite::FractalType_FBm);
+    FastNoiseLite cellular;
+    cellular.SetNoiseType(FastNoiseLite::NoiseType_Cellular);
+    cellular.SetFractalOctaves(3);
+    for (int l = 0; l < sideSize; l++) {
+        for (int c = 0; c < sideSize; c++) {
+            float c1 = ((base.GetNoise((float)c, (float)l, displacement * 50) + 1) / 2) * 255;
+            float c2 = ((cellular.GetNoise((float)c, (float)l, displacement * 50) + 1) / 2) * 255;
+            auto avg = (c1 + c2) / 2;
+            colors.emplace_back(avg, avg, avg);
+            Thermalcolors.emplace_back(avg, avg, avg);
         }
     }
 
     // should be a parameter
-    float threshold = 20;
+    float threshold = other_param;
+    std::cout << "thresh " << threshold << std::endl;
+
     Vector3 neighbors[4] = { {0,1,0},{1,0,0},{0,-1,0},{-1,0,0} };
 
+    int changed = 0;
     for (int l = 1; l < sideSize - 1; l++)
     {
         for (int c = 1; c < sideSize - 1; c++)
@@ -45,13 +50,14 @@ std::vector<Color32> ErosionGenerator::Generate(int sideSize, float displacement
                 // is the neighbor below the threshold?
                 if (nHeight < limit)
                 {
+                    changed++;
                     //std::cout << "height " << height <<" "<< nHeight << std::endl;
 
                     // some of the height moves, from 0  to 1/4 of the threshold, depending on height difference
                     float delta = (limit - nHeight) / threshold;
                     if (delta > 2)
                         delta = 2;
-                    float change = delta * threshold * 0.125f;
+                    float change = delta * threshold / 8;
 
                     // write to the copy
                     Thermalcolors[l * sideSize + c] = Color32(Thermalcolors[l * sideSize + c].r - change, Thermalcolors[l * sideSize + c].r - change, Thermalcolors[l * sideSize + c].r - change);
@@ -64,7 +70,7 @@ std::vector<Color32> ErosionGenerator::Generate(int sideSize, float displacement
         }
     }
 
-    std::cout << colors.size() << std::endl;
+    std::cout << "changed " << changed << std::endl;
     return Thermalcolors;
 }
 std::string ErosionGenerator::GetName() {

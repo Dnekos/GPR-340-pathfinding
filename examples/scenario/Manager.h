@@ -10,6 +10,8 @@ class Manager: public GameObject {
  private:
   float accumulatedTime = 0;
   int sideSize=512;
+  float GeneratorVariable = 0;
+
   SDL_Texture *texture;
   bool isSimulating = false;
 

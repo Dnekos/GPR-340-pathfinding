@@ -5,7 +5,7 @@
 
 class ErosionGenerator : public ScenarioGeneratorBase {
 public:
-	std::vector<Color32> Generate(int sideSize, float displacement = 0) override;
+	std::vector<Color32> Generate(int sideSize, float displacement = 0, float other_param = 0) override;
 	std::string GetName() override;
 };
 
