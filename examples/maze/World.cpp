@@ -1,27 +1,19 @@
 #include "World.h"
-<<<<<<< HEAD
-#include "generators/RecursiveBacktracker.h"
 #include "generators/RecursiveDivision.h"
-#include <chrono>
-
-World::World(Engine* pEngine, int size = 11) : GameObject(pEngine), sideSize(size) {
-    generators.push_back(new RecursiveDivision());
-
-    //generators.push_back(new MazeGenerator());
-    generators.push_back(new RecursiveBacktracker());
-=======
 #include "generators/HuntAndKillExample.h"
 #include "generators/RecursiveBacktrackerExample.h"
 #include "generators/PrimExample.h"
 #include <chrono>
 
-World::World(Engine* pEngine, int size=11): GameObject(pEngine), sideSize(size) {
-  generators.push_back(new PrimExample());
-  generators.push_back(new MazeGenerator());
-  generators.push_back(new RecursiveBacktrackerExample());
-  generators.push_back(new HuntAndKillExample());
->>>>>>> 5f1699e69916b4900ebab6abf5078edd7db55fbc
-}
+World::World(Engine* pEngine, int size = 11) : GameObject(pEngine), sideSize(size) {
+    generators.push_back(new RecursiveDivision());
+
+
+    generators.push_back(new PrimExample());
+    generators.push_back(new MazeGenerator());
+    generators.push_back(new RecursiveBacktrackerExample());
+    generators.push_back(new HuntAndKillExample());
+} 
 
 World::~World(){
   for(auto g : generators)
