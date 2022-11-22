@@ -31,50 +31,45 @@ std::vector<Color32> ErosionGenerator::Generate(int sideSize, float displacement
     float threshold = other_param;
     std::cout << "thresh " << threshold << std::endl;
 
-    Vector3 neighbors[4] = { {0,1,0},{1,0,0},{0,-1,0},{-1,0,0} };
+    // create our neighbors
+    std::vector<Vector3> neighbors;
+    for (float nLine = -5; nLine < 5; nLine++)
+        for (float nCol = -5; nCol < 5; nCol++)
+            neighbors.push_back({ nLine,nCol,0 });
 
     int changed = 0;
-    for (int iter = 0; iter < 10; iter++)
+    for (int l = 5; l < sideSize - 5; l++)
     {
-        for (int l = 1; l < sideSize - 1; l++)
+        for (int c = 5; c < sideSize - 5; c++)
         {
-            for (int c = 1; c < sideSize - 1; c++)
+            float height = colors[l * sideSize + c].r;
+            float limit = height - threshold;
+
+            for (int i = 0; i < neighbors.size(); i++)
             {
-                float height = colors[l * sideSize + c].r;
-                float limit = height - threshold;
+                float nx = l + neighbors[i].x;
+                float ny = c + neighbors[i].y;
+                float nHeight = colors[nx * sideSize + ny].r;
 
-                for (int i = 0; i < 4; i++)
+                // is the neighbor below the threshold?
+                if (nHeight < limit)
                 {
-                    float nx = l + neighbors[i].x;
-                    float ny = c + neighbors[i].y;
-                    float nHeight = colors[nx * sideSize + ny].r;
+                    changed++;
+                    //std::cout << "height " << height <<" "<< nHeight << std::endl;
 
-                    // is the neighbor below the threshold?
-                    if (nHeight < limit)
-                    {
-                        changed++;
-                        //std::cout << "height " << height <<" "<< nHeight << std::endl;
+                    // some of the height moves, from 0  to 1/4 of the threshold, depending on height difference
+                    float delta = (limit - nHeight) / threshold;
+                    if (delta > 2)
+                        delta = 2;
+                    float change = delta * threshold / 8;
 
-                        // some of the height moves, from 0  to 1/4 of the threshold, depending on height difference
-                        float delta = (limit - nHeight) / threshold;
-                        if (delta > 2)
-                            delta = 2;
-                        float change = delta * threshold / 8;
-
-                        // write to the copy
-                        Thermalcolors[l * sideSize + c] = Color32(Thermalcolors[l * sideSize + c].r - change, Thermalcolors[l * sideSize + c].r - change, Thermalcolors[l * sideSize + c].r - change);
-                        Thermalcolors[nx * sideSize + ny] = Color32(Thermalcolors[nx * sideSize + ny].r + change, Thermalcolors[nx * sideSize + ny].r + change, Thermalcolors[nx * sideSize + ny].r + change);
-
-
-                    }
+                    // write to the copy
+                    Thermalcolors[l * sideSize + c] = Color32(Thermalcolors[l * sideSize + c].r - change, Thermalcolors[l * sideSize + c].r - change, Thermalcolors[l * sideSize + c].r - change);
+                    Thermalcolors[nx * sideSize + ny] = Color32(Thermalcolors[nx * sideSize + ny].r + change, Thermalcolors[nx * sideSize + ny].r + change, Thermalcolors[nx * sideSize + ny].r + change);
                 }
-
             }
         }
-
-        colors = Thermalcolors;
     }
-
 
     std::cout << "changed " << changed << std::endl;
     return Thermalcolors;
