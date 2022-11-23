@@ -4,6 +4,7 @@
 #include "generators/ErosionGenerator.h"
 #include <chrono>
 #include <iostream>
+#include <algorithm>
 Manager::Manager(Engine* engine, int size)
     : GameObject(engine) {
   // todo: add your generator here
@@ -88,7 +89,7 @@ void Manager::OnGui(ImGuiContext* context) {
     }
   }
 
-  if (ImGui::SliderFloat("Parameter", &newparam, 0, 100)) {
+  if (ImGui::SliderFloat("Threshold", &newparam, 0, 30)) {
   //newSize = (newSize/4)*4 + 1;
       if (newparam != GeneratorVariable) {
           GeneratorVariable = newparam;

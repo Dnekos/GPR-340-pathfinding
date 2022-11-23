@@ -2,6 +2,8 @@
 #include "../FastNoiseLite.h"
 #include "../PerlinNoise.hpp"
 #include <iostream>
+#include <algorithm>
+
 // do not use this one to your assignment. this is my sample generator
 std::vector<Color32> ErosionGenerator::Generate(int sideSize, float displacement, float other_param)
 {
@@ -35,7 +37,7 @@ std::vector<Color32> ErosionGenerator::Generate(int sideSize, float displacement
     std::vector<Vector3> neighbors;
     for (float nLine = -5; nLine < 5; nLine++)
         for (float nCol = -5; nCol < 5; nCol++)
-            neighbors.push_back({ nLine,nCol,0 });
+            neighbors.push_back({ nLine, nCol, 0 });
 
     int changed = 0;
     for (int l = 5; l < sideSize - 5; l++)
@@ -57,15 +59,18 @@ std::vector<Color32> ErosionGenerator::Generate(int sideSize, float displacement
                     changed++;
                     //std::cout << "height " << height <<" "<< nHeight << std::endl;
 
-                    // some of the height moves, from 0  to 1/4 of the threshold, depending on height difference
+                    // some of the height moves, from 0 to 1/# of neighbor of the threshold, depending on height difference
                     float delta = (limit - nHeight) / threshold;
                     if (delta > 2)
                         delta = 2;
-                    float change = delta * threshold / 8;
+                    float change = delta * threshold / ((neighbors.size() - 1) * 2);
 
                     // write to the copy
-                    Thermalcolors[l * sideSize + c] = Color32(Thermalcolors[l * sideSize + c].r - change, Thermalcolors[l * sideSize + c].r - change, Thermalcolors[l * sideSize + c].r - change);
-                    Thermalcolors[nx * sideSize + ny] = Color32(Thermalcolors[nx * sideSize + ny].r + change, Thermalcolors[nx * sideSize + ny].r + change, Thermalcolors[nx * sideSize + ny].r + change);
+					float neg_change = std::max(0.0f, Thermalcolors[l * sideSize + c].r - change);
+					float pos_change = std::max(0.0f, Thermalcolors[nx * sideSize + ny].r + change);
+
+                    Thermalcolors[l * sideSize + c] = Color32(neg_change, neg_change, neg_change);
+                    Thermalcolors[nx * sideSize + ny] = Color32(pos_change, pos_change, pos_change);
                 }
             }
         }
